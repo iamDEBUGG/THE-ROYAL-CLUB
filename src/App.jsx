@@ -166,14 +166,17 @@ function App() {
     lenis.on('scroll', ScrollTrigger.update);
 
     /* Use GSAP ticker to drive Lenis's raf loop */
-    gsap.ticker.add((time) => {
+    const update = (time) => {
       lenis.raf(time * 1000);
-    });
+    };
+    
+    gsap.ticker.add(update);
     gsap.ticker.lagSmoothing(0);
 
     return () => {
       lenis.destroy();
       lenisRef.current = null;
+      gsap.ticker.remove(update);
     };
   }, []);
 

@@ -43,7 +43,7 @@ export default function CeoBoardPage() {
                     transition: 'all 0.2s'
                   }}
                 >
-                  <span>👑</span> CEO Portal Login
+                  <span></span> CEO Portal Login
                 </button>
               </SignInButton>
             </div>

@@ -156,7 +156,7 @@ main,
 section,
 .broadcast-page,
 .ceo-page {
-  overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100vw;
 }
 

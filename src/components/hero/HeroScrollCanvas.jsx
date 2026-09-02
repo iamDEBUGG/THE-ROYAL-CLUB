@@ -99,15 +99,33 @@ const HeroScrollCanvas = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    let lastWidth = window.innerWidth;
+    let lastHeight = window.innerHeight;
+
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      if (isLoaded) {
-        drawFrame(Math.round(frameIndexRef.current.value));
+      const currentWidth = window.innerWidth;
+      const currentHeight = window.innerHeight;
+
+      // On mobile, scrolling hides/shows the address bar, changing innerHeight slightly.
+      // This causes constant canvas clearing and redraw flashing.
+      // We only resize if width changes or height changes significantly (>100px).
+      // We also check if it's the default canvas size (300) to force initial resize.
+      if (currentWidth !== lastWidth || Math.abs(currentHeight - lastHeight) > 100 || canvas.width === 300) {
+        lastWidth = currentWidth;
+        lastHeight = currentHeight;
+        
+        canvas.width = currentWidth;
+        canvas.height = currentHeight;
+        
+        if (isLoaded) {
+          drawFrame(Math.round(frameIndexRef.current.value));
+        }
       }
     };
 
+    // Force initial resize on mount
     resize();
+
     window.addEventListener('resize', resize);
     return () => window.removeEventListener('resize', resize);
   }, [isLoaded, drawFrame]);
@@ -170,7 +188,7 @@ const HeroScrollCanvas = () => {
       style={{ height: '500vh' }}
     >
       {/* Sticky canvas viewport */}
-      <div className="sticky top-0 left-0 w-full h-screen overflow-hidden">
+      <div className="sticky top-0 left-0 w-full overflow-hidden" style={{ height: '100dvh' }}>
         <canvas
           ref={canvasRef}
           className="block w-full h-full"
