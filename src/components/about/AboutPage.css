@@ -1,0 +1,169 @@
+.about-page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Silk background canvas ── */
+.about-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── Content layer ── */
+.about-content {
+  position: relative;
+  z-index: 1;
+  padding: 7rem 1.5rem 5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ── Language toggle ── */
+.about-lang-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 3rem;
+}
+
+.about-lang-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0.5rem 1.5rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(245, 240, 230, 0.25);
+  background: transparent;
+  color: rgba(245, 240, 230, 0.6);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.about-lang-btn:hover {
+  border-color: rgba(245, 240, 230, 0.5);
+  color: rgba(245, 240, 230, 0.85);
+}
+
+.about-lang-btn.active {
+  background: rgba(245, 240, 230, 0.12);
+  border-color: rgba(201, 162, 39, 0.6);
+  color: #F5F0E6;
+}
+
+/* ── Title ── */
+.about-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.25rem, 6vw, 3.5rem);
+  color: #F5F0E6;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.about-divider {
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #C9A227, transparent);
+  margin: 1.25rem auto 2.5rem;
+  border: none;
+}
+
+/* ── Body content ── */
+.about-body {
+  color: rgba(245, 240, 230, 0.82);
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.85;
+}
+
+.about-body p {
+  margin-bottom: 1.5rem;
+}
+
+.about-body strong {
+  color: #F5F0E6;
+  font-weight: 600;
+}
+
+/* ── Tagline ── */
+.about-tagline {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  color: #C9A227;
+  letter-spacing: 0.08em;
+  margin: 2.5rem 0 1rem;
+}
+
+.about-closer {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  color: rgba(245, 240, 230, 0.9);
+  font-style: italic;
+  margin-bottom: 0;
+}
+
+/* ── Fade-in animation ── */
+.about-fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: aboutFadeUp 0.8s ease forwards;
+}
+
+.about-fade-in:nth-child(2) { animation-delay: 0.15s; }
+.about-fade-in:nth-child(3) { animation-delay: 0.25s; }
+.about-fade-in:nth-child(4) { animation-delay: 0.35s; }
+.about-fade-in:nth-child(5) { animation-delay: 0.45s; }
+.about-fade-in:nth-child(6) { animation-delay: 0.55s; }
+
+@keyframes aboutFadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Hindi body text ── */
+.about-body.hindi {
+  font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+  font-size: 1.1rem;
+  line-height: 2;
+}
+
+@media (max-width: 640px) {
+  .about-content {
+    padding: 6rem 1.25rem 3rem;
+  }
+
+  .about-body {
+    font-size: 1rem;
+  }
+}
+
+/* ── Gallery section ── */
+.about-gallery-section {
+  margin-top: 4rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid rgba(245, 240, 230, 0.08);
+}
+
+.about-gallery-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  color: #F5F0E6;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.about-gallery-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: rgba(245, 240, 230, 0.55);
+  text-align: center;
+  margin-bottom: 2rem;
+}
