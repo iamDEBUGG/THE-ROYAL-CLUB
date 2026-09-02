@@ -51,7 +51,12 @@ const HeroScrollCanvas = () => {
 
     const hRatio = canvas.width / img.width;
     const vRatio = canvas.height / img.height;
-    const ratio = Math.max(hRatio, vRatio);
+    
+    // On mobile portrait (width < height), use 'contain' (Math.min) to prevent massive horizontal cropping.
+    // On desktop landscape, use 'cover' (Math.max) to fill the screen.
+    const isPortrait = canvas.width < canvas.height;
+    const ratio = isPortrait ? Math.min(hRatio, vRatio) : Math.max(hRatio, vRatio);
+    
     const centerX = (canvas.width - img.width * ratio) / 2;
     const centerY = (canvas.height - img.height * ratio) / 2;
 
