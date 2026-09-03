@@ -26,13 +26,6 @@ const CEO_PROFILE = {
   role: 'Founder & CEO'
 };
 
-const INITIAL_SCHEDULES = [
- 
-];
-
-const INITIAL_ARCHIVES = [
-
-];
 
 export function LiveProvider({ children }) {
   // Live session state
