@@ -27,69 +27,11 @@ const CEO_PROFILE = {
 };
 
 const INITIAL_SCHEDULES = [
-  {
-    id: 'sch-1',
-    memberName: 'Diwakar Mishra',
-    memberState: 'Bihar',
-    memberImage: '/members/Diwakar-Mishra-Bihar.jpg',
-    date: 'Today',
-    time: '08:00 PM IST',
-    topic: 'Unity & Collective Growth in Modern India',
-    status: 'Upcoming'
-  },
-  {
-    id: 'sch-2',
-    memberName: 'Guddi Baghel',
-    memberState: 'Uttrakhand',
-    memberImage: '/members/Guddi-Baghel-Uttrakhand.jpg',
-    date: 'Tomorrow',
-    time: '07:30 PM IST',
-    topic: 'Empowering Women Leadership Across States',
-    status: 'Upcoming'
-  },
-  {
-    id: 'sch-3',
-    memberName: 'Pankaj Sharma',
-    memberState: 'West Bengal',
-    memberImage: '/members/Pankaj-Sharma-West-Bengal.jpg',
-    date: 'Thursday',
-    time: '08:00 PM IST',
-    topic: 'Social Responsibility & Monthly Charity Drives',
-    status: 'Upcoming'
-  }
+ 
 ];
 
 const INITIAL_ARCHIVES = [
-  {
-    id: 'arc-1',
-    title: 'The Vision of The Royal Club & Pan-India Movement',
-    memberName: 'Rajendra Singh Papola (CEO)',
-    date: 'August 28, 2026',
-    videoUrl: 'https://www.facebook.com',
-    thumbnail: '/about-photo/IMG_20260901_142236.jpg',
-    views: '1.4k Views',
-    media: []
-  },
-  {
-    id: 'arc-2',
-    title: 'Monthly Donation Drive & Helping Families in Need',
-    memberName: 'Amit Kumar & Team',
-    date: 'August 20, 2026',
-    videoUrl: 'https://www.facebook.com',
-    thumbnail: '/about-photo/IMG_20260831_121847.png',
-    views: '2.1k Views',
-    media: []
-  },
-  {
-    id: 'arc-3',
-    title: 'Humanity & Community Outreach Across Borders',
-    memberName: 'Sudama Ojha & Samri Priya Rai',
-    date: 'August 14, 2026',
-    videoUrl: 'https://www.facebook.com',
-    thumbnail: '/about-photo/IMG_20260901_135351.jpg',
-    views: '980 Views',
-    media: []
-  }
+
 ];
 
 export function LiveProvider({ children }) {
