@@ -1,61 +1,113 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Show, SignInButton, UserButton, useUser } from '@clerk/react';
+import { useAuth } from '../../context/AuthContext';
 import { useLive } from '../../context/LiveContext';
 import ProfileCard from '../cards/ProfileCard';
 import CeoDashboard from '../admin/CeoDashboard';
 import './CeoBoardPage.css';
 
 export default function CeoBoardPage() {
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isCeoAuthenticated, isLoading, signIn, signOut, user } = useAuth();
   const { isLive, currentLive } = useLive();
 
-  const isCeoAuthenticated = isSignedIn;
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeView, setActiveView] = useState('dashboard'); // 'dashboard' | 'public'
+
+  const handleOpenLogin = () => {
+    setLoginError('');
+    setIsLoginModalOpen(true);
+  };
+
+  const handleCloseLogin = () => {
+    setIsLoginModalOpen(false);
+    setLoginError('');
+  };
+
+  const handleSubmitLogin = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setLoginError('Please enter both email and password.');
+      return;
+    }
+    try {
+      setIsSubmitting(true);
+      setLoginError('');
+      await signIn(email, password);
+      setIsLoginModalOpen(false);
+      setEmail('');
+      setPassword('');
+    } catch (err) {
+      console.error('Login error:', err);
+      setLoginError(err.message || 'Invalid login credentials. Please verify in Supabase.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <main className="ceo-page">
       <div className="ceo-container">
         {/* Top Portal Bar */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
-          <Show when="signed-in">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'rgba(27,77,62,0.5)', padding: '0.4rem 0.9rem', borderRadius: '999px', border: '1px solid rgba(201,162,39,0.3)' }}>
-              <span style={{ fontSize: '0.8rem', color: '#C9A227', fontWeight: 600 }}>CEO Logged In</span>
-              <UserButton afterSignOutUrl="/admin" />
-            </div>
-          </Show>
+        <div className="ceo-top-portal-bar">
+          {isCeoAuthenticated ? (
+            <div className="ceo-auth-toolbar">
+              <div className="ceo-auth-badge">
+                <span className="ceo-status-dot-active" />
+                <span className="ceo-auth-badge-text">
+                  CEO Logged In {user?.email ? `(${user.email})` : ''}
+                </span>
+              </div>
 
-          <Show when="signed-out">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <SignInButton mode="modal">
+              {/* View Switcher: Command Center vs Public Board */}
+              <div className="ceo-view-switcher">
                 <button
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(201, 162, 39, 0.2) 0%, rgba(201, 162, 39, 0.1) 100%)',
-                    border: '1px solid rgba(201, 162, 39, 0.4)',
-                    color: '#F5F0E6',
-                    padding: '0.45rem 1.1rem',
-                    borderRadius: '999px',
-                    fontSize: '0.8rem',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.4rem',
-                    transition: 'all 0.2s'
-                  }}
+                  type="button"
+                  className={`ceo-switch-btn ${activeView === 'dashboard' ? 'active' : ''}`}
+                  onClick={() => setActiveView('dashboard')}
                 >
-                  <span></span> CEO Portal Login
+                  <span>🎙️</span> Command Center
                 </button>
-              </SignInButton>
+                <button
+                  type="button"
+                  className={`ceo-switch-btn ${activeView === 'public' ? 'active' : ''}`}
+                  onClick={() => setActiveView('public')}
+                >
+                  <span></span> Public Board
+                </button>
+              </div>
+
+              <button
+                type="button"
+                className="ceo-btn-logout"
+                onClick={signOut}
+                title="Lock CEO Portal"
+              >
+                <span>🔒</span> Lock Portal
+              </button>
             </div>
-          </Show>
+          ) : (
+            <div className="ceo-guest-toolbar">
+              <button
+                type="button"
+                className="ceo-btn-open-login"
+                onClick={handleOpenLogin}
+              >
+                <span></span> CEO Portal Login
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* If CEO is Authenticated -> Show CEO Dashboard */}
-        {isCeoAuthenticated ? (
+        {/* If CEO is Authenticated and Active View is 'dashboard' -> Show CEO Dashboard */}
+        {isCeoAuthenticated && activeView === 'dashboard' ? (
           <div>
             <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
               <div className="ceo-badge">
-                <span></span> CEO Command Center
+                <span>⚡</span> CEO Command Center
               </div>
               <h1 className="ceo-title">Broadcast &amp; Live Dispatcher</h1>
               <p className="ceo-subtitle">
@@ -66,7 +118,7 @@ export default function CeoBoardPage() {
             <CeoDashboard />
           </div>
         ) : (
-          /* Public Visitor View */
+          /* Public Visitor View (or CEO previewing public view) */
           <div>
             {/* Header */}
             <header className="ceo-header">
@@ -96,6 +148,7 @@ export default function CeoBoardPage() {
                     behindGlowColor="rgba(201, 162, 39, 0.65)"
                     behindGlowEnabled={true}
                     innerGradient="linear-gradient(145deg, rgba(27, 77, 62, 0.6) 0%, rgba(201, 162, 39, 0.25) 100%)"
+                    avatarObjectPosition="25% 30%"
                   />
                 </div>
               </div>
@@ -175,6 +228,93 @@ export default function CeoBoardPage() {
           </div>
         )}
       </div>
+
+      {/* CEO Login Modal (Supabase Auth) */}
+      {isLoginModalOpen && (
+        <div className="ceo-login-modal-overlay" onClick={handleCloseLogin}>
+          <div
+            className="ceo-login-modal-card"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="ceo-login-modal-close"
+              onClick={handleCloseLogin}
+              aria-label="Close modal"
+            >
+              &times;
+            </button>
+
+            <div className="ceo-login-modal-header">
+              <div className="ceo-login-badge">
+                <span></span> The Royal Club
+              </div>
+              <h2 className="ceo-login-title">CEO Portal Access</h2>
+              <p className="ceo-login-desc">
+                Sign in with your Supabase CEO credentials to access the Broadcast Command Center.
+              </p>
+            </div>
+
+            {loginError && (
+              <div className="ceo-login-error-box">
+                <span>⚠️</span> {loginError}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmitLogin} className="ceo-login-form">
+              <div className="ceo-login-field">
+                <label className="ceo-login-label">CEO Email</label>
+                <input
+                  type="email"
+                  className="ceo-login-input"
+                  placeholder="e.g. ceo@theroyalclub.in"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  autoFocus
+                />
+              </div>
+
+              <div className="ceo-login-field">
+                <label className="ceo-login-label">Password</label>
+                <input
+                  type="password"
+                  className="ceo-login-input"
+                  placeholder="Enter your secure password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="ceo-login-actions">
+                <button
+                  type="button"
+                  className="ceo-login-btn-cancel"
+                  onClick={handleCloseLogin}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="ceo-login-btn-submit"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className="ceo-login-spinner" /> Authenticating...
+                    </>
+                  ) : (
+                    <>
+                      <span>🔓</span> Unlock Portal
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

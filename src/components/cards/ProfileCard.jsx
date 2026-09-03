@@ -34,6 +34,7 @@ const ProfileCardComponent = ({
   status = 'Uttrakhand, India',
   contactText = 'Contact',
   showUserInfo = false,
+  avatarObjectPosition = 'center center',
   onContactClick
 }) => {
   const wrapRef = useRef(null);
@@ -101,69 +102,54 @@ const ProfileCardComponent = ({
 
       setVarsFromXY(currentX, currentY);
 
-      const stillFar = Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05;
+      if (running) rafId = requestAnimationFrame(step);
+    };
 
-      if (stillFar || document.hasFocus()) {
-        rafId = requestAnimationFrame(step);
-      } else {
-        running = false;
+    const start = (targetXVal, targetYVal) => {
+      targetX = targetXVal;
+      targetY = targetYVal;
+      if (!running) {
+        running = true;
         lastTs = 0;
-        if (rafId) {
-          cancelAnimationFrame(rafId);
-          rafId = null;
-        }
+        rafId = requestAnimationFrame(step);
       }
     };
 
-    const start = () => {
-      if (running) return;
-      running = true;
-      lastTs = 0;
-      rafId = requestAnimationFrame(step);
+    const stop = () => {
+      running = false;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = null;
     };
 
     return {
-      setImmediate(x, y) {
+      setInitial: (x, y) => {
         currentX = x;
         currentY = y;
-        setVarsFromXY(currentX, currentY);
-      },
-      setTarget(x, y) {
         targetX = x;
         targetY = y;
-        start();
+        setVarsFromXY(x, y);
       },
-      toCenter() {
-        const shell = shellRef.current;
-        if (!shell) return;
-        this.setTarget(shell.clientWidth / 2, shell.clientHeight / 2);
+      start,
+      stop,
+      setTarget: (x, y) => {
+        targetX = x;
+        targetY = y;
       },
-      beginInitial(durationMs) {
-        initialUntil = performance.now() + durationMs;
-        start();
-      },
-      getCurrent() {
-        return { x: currentX, y: currentY, tx: targetX, ty: targetY };
-      },
-      cancel() {
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = null;
-        running = false;
-        lastTs = 0;
+      setInitialUntil: ts => {
+        initialUntil = ts;
       }
     };
   }, [enableTilt]);
-
-  const getOffsets = (evt, el) => {
-    const rect = el.getBoundingClientRect();
-    return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
-  };
 
   const handlePointerMove = useCallback(
     event => {
       const shell = shellRef.current;
       if (!shell || !tiltEngine) return;
-      const { x, y } = getOffsets(event, shell);
+
+      const rect = shell.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
       tiltEngine.setTarget(x, y);
     },
     [tiltEngine]
@@ -176,13 +162,17 @@ const ProfileCardComponent = ({
 
       shell.classList.add('active');
       shell.classList.add('entering');
-      if (enterTimerRef.current) window.clearTimeout(enterTimerRef.current);
-      enterTimerRef.current = window.setTimeout(() => {
+
+      if (enterTimerRef.current) clearTimeout(enterTimerRef.current);
+      enterTimerRef.current = setTimeout(() => {
         shell.classList.remove('entering');
       }, ANIMATION_CONFIG.ENTER_TRANSITION_MS);
 
-      const { x, y } = getOffsets(event, shell);
-      tiltEngine.setTarget(x, y);
+      const rect = shell.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      tiltEngine.start(x, y);
     },
     [tiltEngine]
   );
@@ -191,20 +181,13 @@ const ProfileCardComponent = ({
     const shell = shellRef.current;
     if (!shell || !tiltEngine) return;
 
-    tiltEngine.toCenter();
+    tiltEngine.setTarget(shell.clientWidth / 2, shell.clientHeight / 2);
 
-    const checkSettle = () => {
-      const { x, y, tx, ty } = tiltEngine.getCurrent();
-      const settled = Math.hypot(tx - x, ty - y) < 0.6;
-      if (settled) {
-        shell.classList.remove('active');
-        leaveRafRef.current = null;
-      } else {
-        leaveRafRef.current = requestAnimationFrame(checkSettle);
-      }
-    };
     if (leaveRafRef.current) cancelAnimationFrame(leaveRafRef.current);
-    leaveRafRef.current = requestAnimationFrame(checkSettle);
+    leaveRafRef.current = requestAnimationFrame(() => {
+      shell.classList.remove('active');
+      tiltEngine.stop();
+    });
   }, [tiltEngine]);
 
   const handleDeviceOrientation = useCallback(
@@ -213,70 +196,49 @@ const ProfileCardComponent = ({
       if (!shell || !tiltEngine) return;
 
       const { beta, gamma } = event;
-      if (beta == null || gamma == null) return;
+      if (beta === null || gamma === null) return;
 
-      const centerX = shell.clientWidth / 2;
-      const centerY = shell.clientHeight / 2;
-      const x = clamp(centerX + gamma * mobileTiltSensitivity, 0, shell.clientWidth);
-      const y = clamp(
-        centerY + (beta - ANIMATION_CONFIG.DEVICE_BETA_OFFSET) * mobileTiltSensitivity,
-        0,
-        shell.clientHeight
-      );
+      const rect = shell.getBoundingClientRect();
+      const x = ((gamma + 90) / 180) * rect.width;
+      const y = ((beta + 180) / 360) * rect.height;
 
       tiltEngine.setTarget(x, y);
     },
-    [tiltEngine, mobileTiltSensitivity]
+    [tiltEngine]
   );
 
   useEffect(() => {
-    if (!enableTilt || !tiltEngine) return;
-
     const shell = shellRef.current;
-    if (!shell) return;
+    if (!shell || !enableTilt) return;
 
-    const pointerMoveHandler = handlePointerMove;
-    const pointerEnterHandler = handlePointerEnter;
-    const pointerLeaveHandler = handlePointerLeave;
-    const deviceOrientationHandler = handleDeviceOrientation;
+    const handlePointerMoveListener = e => handlePointerMove(e);
+    const handlePointerEnterListener = e => handlePointerEnter(e);
+    const handlePointerLeaveListener = () => handlePointerLeave();
 
-    shell.addEventListener('pointerenter', pointerEnterHandler);
-    shell.addEventListener('pointermove', pointerMoveHandler);
-    shell.addEventListener('pointerleave', pointerLeaveHandler);
+    shell.addEventListener('pointermove', handlePointerMoveListener);
+    shell.addEventListener('pointerenter', handlePointerEnterListener);
+    shell.addEventListener('pointerleave', handlePointerLeaveListener);
 
-    const handleClick = () => {
-      if (!enableMobileTilt || typeof location === 'undefined' || location.protocol !== 'https:') return;
-      const anyMotion = window.DeviceMotionEvent;
-      if (anyMotion && typeof anyMotion.requestPermission === 'function') {
-        anyMotion
-          .requestPermission()
-          .then(state => {
-            if (state === 'granted') {
-              window.addEventListener('deviceorientation', deviceOrientationHandler);
-            }
-          })
-          .catch(console.error);
-      } else {
-        window.addEventListener('deviceorientation', deviceOrientationHandler);
-      }
-    };
-    shell.addEventListener('click', handleClick);
+    if (enableMobileTilt) {
+      window.addEventListener('deviceorientation', handleDeviceOrientation);
+    }
 
-    const initialX = (shell.clientWidth || 0) - ANIMATION_CONFIG.INITIAL_X_OFFSET;
-    const initialY = ANIMATION_CONFIG.INITIAL_Y_OFFSET;
-    tiltEngine.setImmediate(initialX, initialY);
-    tiltEngine.toCenter();
-    tiltEngine.beginInitial(ANIMATION_CONFIG.INITIAL_DURATION);
+    const rect = shell.getBoundingClientRect();
+    tiltEngine?.setInitial(rect.width / 2, rect.height / 2);
 
     return () => {
-      shell.removeEventListener('pointerenter', pointerEnterHandler);
-      shell.removeEventListener('pointermove', pointerMoveHandler);
-      shell.removeEventListener('pointerleave', pointerLeaveHandler);
-      shell.removeEventListener('click', handleClick);
-      window.removeEventListener('deviceorientation', deviceOrientationHandler);
-      if (enterTimerRef.current) window.clearTimeout(enterTimerRef.current);
+      shell.removeEventListener('pointermove', handlePointerMoveListener);
+      shell.removeEventListener('pointerenter', handlePointerEnterListener);
+      shell.removeEventListener('pointerleave', handlePointerLeaveListener);
+
+      if (enableMobileTilt) {
+        window.removeEventListener('deviceorientation', handleDeviceOrientation);
+      }
+
+      tiltEngine?.stop();
+      if (enterTimerRef.current) clearTimeout(enterTimerRef.current);
       if (leaveRafRef.current) cancelAnimationFrame(leaveRafRef.current);
-      tiltEngine.cancel();
+      shell.classList.remove('active');
       shell.classList.remove('entering');
     };
   }, [
@@ -295,9 +257,10 @@ const ProfileCardComponent = ({
       '--grain': grainUrl ? `url(${grainUrl})` : 'none',
       '--inner-gradient': innerGradient ?? DEFAULT_INNER_GRADIENT,
       '--behind-glow-color': behindGlowColor ?? 'rgba(201, 162, 39, 0.6)',
-      '--behind-glow-size': behindGlowSize ?? '40%'
+      '--behind-glow-size': behindGlowSize ?? '40%',
+      '--avatar-object-position': avatarObjectPosition
     }),
-    [iconUrl, grainUrl, innerGradient, behindGlowColor, behindGlowSize]
+    [iconUrl, grainUrl, innerGradient, behindGlowColor, behindGlowSize, avatarObjectPosition]
   );
 
   const handleContactClick = useCallback(() => {
@@ -318,6 +281,7 @@ const ProfileCardComponent = ({
                 src={avatarUrl}
                 alt={`${name || 'User'} avatar`}
                 loading="lazy"
+                style={{ objectPosition: avatarObjectPosition }}
                 onError={e => {
                   const t = e.target;
                   t.style.display = 'none';
