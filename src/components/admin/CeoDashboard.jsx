@@ -261,22 +261,28 @@ export default function CeoDashboard() {
         </div>
 
         <div>
-          {schedules.map(item => (
-            <div key={item.id} className="dash-list-item">
-              <div>
-                <h4 className="dash-list-item-title">{item.topic}</h4>
-                <p className="dash-list-item-sub">
-                  Host: <strong style={{ color: '#F5F0E6' }}>{item.memberName}</strong> ({item.memberState}) &bull; {item.date} at {item.time}
-                </p>
+          {schedules.length > 0 ? (
+            schedules.map(item => (
+              <div key={item.id} className="dash-list-item">
+                <div>
+                  <h4 className="dash-list-item-title">{item.topic}</h4>
+                  <p className="dash-list-item-sub">
+                    Host: <strong style={{ color: '#F5F0E6' }}>{item.memberName}</strong> ({item.memberState}) &bull; {item.date} at {item.time}
+                  </p>
+                </div>
+                <button
+                  className="btn-item-delete"
+                  onClick={() => removeSchedule(item.id)}
+                >
+                  Remove
+                </button>
               </div>
-              <button
-                className="btn-item-delete"
-                onClick={() => removeSchedule(item.id)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p style={{ color: 'rgba(245, 240, 230, 0.5)', fontSize: '0.9rem', fontStyle: 'italic', margin: '0.8rem 0' }}>
+              No scheduled sessions published yet. Use the form above to schedule a live broadcast.
+            </p>
+          )}
         </div>
       </section>
 
@@ -384,22 +390,28 @@ export default function CeoDashboard() {
         </div>
 
         <div>
-          {archives.map(item => (
-            <div key={item.id} className="dash-list-item">
-              <div>
-                <h4 className="dash-list-item-title">{item.title}</h4>
-                <p className="dash-list-item-sub">
-                  Featuring: {item.memberName} &bull; {item.date}
-                </p>
+          {archives.length > 0 ? (
+            archives.map(item => (
+              <div key={item.id} className="dash-list-item">
+                <div>
+                  <h4 className="dash-list-item-title">{item.title}</h4>
+                  <p className="dash-list-item-sub">
+                    Featuring: {item.memberName} &bull; {item.date}
+                  </p>
+                </div>
+                <button
+                  className="btn-item-delete"
+                  onClick={() => removeArchive(item.id)}
+                >
+                  Remove
+                </button>
               </div>
-              <button
-                className="btn-item-delete"
-                onClick={() => removeArchive(item.id)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p style={{ color: 'rgba(245, 240, 230, 0.5)', fontSize: '0.9rem', fontStyle: 'italic', margin: '0.8rem 0' }}>
+              No archives or moments posted yet. Use the form above to post recordings and highlights.
+            </p>
+          )}
         </div>
       </section>
 

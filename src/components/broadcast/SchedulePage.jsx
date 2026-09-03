@@ -31,7 +31,7 @@ export default function SchedulePage() {
               </div>
 
               <div className="schedule-time-tag">
-                🗓️ {item.date} &bull; ⏰ {item.time}
+                {item.date} &bull;  {item.time}
               </div>
             </div>
           ))}

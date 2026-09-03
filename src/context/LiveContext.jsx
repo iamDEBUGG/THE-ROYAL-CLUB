@@ -26,7 +26,6 @@ const CEO_PROFILE = {
   role: 'Founder & CEO'
 };
 
-
 export function LiveProvider({ children }) {
   // Live session state
   const [liveState, setLiveState] = useState(() => {
@@ -38,23 +37,23 @@ export function LiveProvider({ children }) {
     }
   });
 
-  // Upcoming schedules
+  // Upcoming schedules (starts empty, populated from Supabase or CEO action)
   const [schedules, setSchedules] = useState(() => {
     try {
       const saved = localStorage.getItem('ROYAL_SCHEDULES_STATE');
-      return saved ? JSON.parse(saved) : INITIAL_SCHEDULES;
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return INITIAL_SCHEDULES;
+      return [];
     }
   });
 
-  // Session archives
+  // Session archives & moments (starts empty, populated from Supabase or CEO action)
   const [archives, setArchives] = useState(() => {
     try {
       const saved = localStorage.getItem('ROYAL_ARCHIVES_STATE');
-      return saved ? JSON.parse(saved) : INITIAL_ARCHIVES;
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return INITIAL_ARCHIVES;
+      return [];
     }
   });
 
@@ -94,20 +93,18 @@ export function LiveProvider({ children }) {
         .order('created_at', { ascending: false });
 
       if (!error && data) {
-        if (data.length > 0) {
-          setSchedules(
-            data.map(s => ({
-              id: s.id,
-              memberName: s.member_name,
-              memberState: s.member_state,
-              memberImage: s.member_image,
-              date: s.date,
-              time: s.time,
-              topic: s.topic,
-              status: s.status || 'Upcoming'
-            }))
-          );
-        }
+        setSchedules(
+          data.map(s => ({
+            id: s.id,
+            memberName: s.member_name,
+            memberState: s.member_state,
+            memberImage: s.member_image,
+            date: s.date,
+            time: s.time,
+            topic: s.topic,
+            status: s.status || 'Upcoming'
+          }))
+        );
       }
     } catch (err) {
       console.warn('Error fetching schedules from Supabase:', err);
@@ -122,20 +119,18 @@ export function LiveProvider({ children }) {
         .order('created_at', { ascending: false });
 
       if (!error && data) {
-        if (data.length > 0) {
-          setArchives(
-            data.map(a => ({
-              id: a.id,
-              title: a.title,
-              memberName: a.member_name,
-              date: a.date,
-              videoUrl: a.video_url || 'https://www.facebook.com',
-              thumbnail: a.thumbnail,
-              views: a.views || 'Session Highlights',
-              media: Array.isArray(a.media) ? a.media : []
-            }))
-          );
-        }
+        setArchives(
+          data.map(a => ({
+            id: a.id,
+            title: a.title,
+            memberName: a.member_name,
+            date: a.date,
+            videoUrl: a.video_url || 'https://www.facebook.com',
+            thumbnail: a.thumbnail,
+            views: a.views || 'Session Highlights',
+            media: Array.isArray(a.media) ? a.media : []
+          }))
+        );
       }
     } catch (err) {
       console.warn('Error fetching archives from Supabase:', err);
@@ -161,53 +156,11 @@ export function LiveProvider({ children }) {
     }
   };
 
-  // Seed default items if Supabase tables are freshly created and empty
-  const seedInitialDataIfEmpty = async () => {
-    try {
-      // Check schedules
-      const { data: schData } = await supabase.from('schedules').select('id').limit(1);
-      if (Array.isArray(schData) && schData.length === 0) {
-        for (const sch of INITIAL_SCHEDULES) {
-          await supabase.from('schedules').insert({
-            id: sch.id,
-            member_name: sch.memberName,
-            member_state: sch.memberState,
-            member_image: sch.memberImage,
-            date: sch.date,
-            time: sch.time,
-            topic: sch.topic,
-            status: sch.status
-          });
-        }
-      }
-
-      // Check archives
-      const { data: arcData } = await supabase.from('archives').select('id').limit(1);
-      if (Array.isArray(arcData) && arcData.length === 0) {
-        for (const arc of INITIAL_ARCHIVES) {
-          await supabase.from('archives').insert({
-            id: arc.id,
-            title: arc.title,
-            member_name: arc.memberName,
-            date: arc.date,
-            video_url: arc.videoUrl,
-            thumbnail: arc.thumbnail,
-            views: arc.views,
-            media: arc.media || []
-          });
-        }
-      }
-    } catch (err) {
-      // Silently catch if tables not yet created
-    }
-  };
-
-  // Initialize Supabase & Real-time channel
+  // Initialize Supabase data & Real-time channel
   useEffect(() => {
     fetchLiveStateFromSupabase();
     fetchSchedulesFromSupabase();
     fetchArchivesFromSupabase();
-    seedInitialDataIfEmpty();
 
     const channel = supabase
       .channel('royal-live-sync')

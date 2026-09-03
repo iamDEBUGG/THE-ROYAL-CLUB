@@ -56,37 +56,60 @@ export default function LiveScheduleSection() {
             <h3 className="home-upcoming-title">
               {isLive ? 'Next Upcoming Sessions' : 'Next Sessions Ahead'}
             </h3>
-            <Link
-              to="/schedule"
-              style={{
-                color: '#C9A227',
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                textDecoration: 'none'
-              }}
-            >
-              View Full Schedule &rarr;
-            </Link>
+            {nextTwoSchedules.length > 0 && (
+              <Link
+                to="/schedule"
+                style={{
+                  color: '#C9A227',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  textDecoration: 'none'
+                }}
+              >
+                View Full Schedule &rarr;
+              </Link>
+            )}
           </div>
 
-          <div className="home-upcoming-grid">
-            {nextTwoSchedules.map(sch => (
-              <div key={sch.id} className="home-schedule-card">
-                <div className="home-schedule-thumb">
-                  <img src={sch.memberImage} alt={sch.memberName} />
-                </div>
-                <div className="home-schedule-info">
-                  <h4 className="home-schedule-topic">{sch.topic}</h4>
-                  <div className="home-schedule-host">
-                    {sch.memberName} &bull; {sch.memberState}
+          {nextTwoSchedules.length > 0 ? (
+            <div className="home-upcoming-grid">
+              {nextTwoSchedules.map(sch => (
+                <div key={sch.id} className="home-schedule-card">
+                  <div className="home-schedule-thumb">
+                    <img src={sch.memberImage} alt={sch.memberName} />
                   </div>
-                  <div className="home-schedule-time">
-                    {sch.date} &bull;  {sch.time}
+                  <div className="home-schedule-info">
+                    <h4 className="home-schedule-topic">{sch.topic}</h4>
+                    <div className="home-schedule-host">
+                      {sch.memberName} &bull; {sch.memberState}
+                    </div>
+                    <div className="home-schedule-time">
+                      {sch.date} &bull;  {sch.time}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '2.5rem 1.5rem',
+                background: 'rgba(15, 46, 38, 0.4)',
+                borderRadius: '16px',
+                border: '1px dashed rgba(201, 162, 39, 0.25)',
+                color: 'rgba(245, 240, 230, 0.75)'
+              }}
+            >
+              <div style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>🗓️</div>
+              <p style={{ margin: 0, fontSize: '0.95rem', color: '#F5F0E6' }}>
+                No upcoming sessions scheduled currently.
+              </p>
+              <small style={{ color: 'rgba(245,240,230,0.6)' }}>
+                New live broadcast timings will appear here once published.
+              </small>
+            </div>
+          )}
         </div>
       </div>
     </section>
