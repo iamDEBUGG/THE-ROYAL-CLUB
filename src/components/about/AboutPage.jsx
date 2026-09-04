@@ -1,89 +1,133 @@
 import { useState } from 'react';
 import Silk from '../backgrounds/Silk';
 import AccordionGallery from '../gallery/AccordionGallery';
+import SEO from '../common/SEO';
+import Footer from '../common/Footer';
 import './AboutPage.css';
 
 /* ── Gallery items — photos from public/about-photo/ ── */
 const galleryItems = [
-  { image: '/about-photo/IMG_20260831_121847.png', label: 'Donations & Social Cause' },
-  { image: '/about-photo/IMG_20260901_135334.jpg', label: 'Community Support' },
-  { image: '/about-photo/IMG_20260901_135351.jpg', label: 'Humanity' },
-  { image: '/about-photo/IMG_20260901_135401.jpg', label: 'Helping Hands' },
-  { image: '/about-photo/IMG_20260901_142236.jpg', label: 'Live Session' },
+  { image: '/about-photo/IMG_20260831_121847.png', label: 'Donations & Social Cause', alt: 'The Royal Club donation initiative and social service' },
+  { image: '/about-photo/IMG_20260901_135334.jpg', label: 'Community Support', alt: 'Community support and grassroots outreach by The Royal Club' },
+  { image: '/about-photo/IMG_20260901_135351.jpg', label: 'Humanity', alt: 'Humanitarian assistance and support to families in need' },
+  { image: '/about-photo/IMG_20260901_135401.jpg', label: 'Helping Hands', alt: 'Helping hands and empowering local communities across India' },
+  { image: '/about-photo/IMG_20260901_142236.jpg', label: 'Live Session', alt: 'Interactive live discussion session with community members' },
 ];
 
 export default function AboutPage() {
   const [lang, setLang] = useState('en');
 
+  const aboutSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'AboutPage',
+        '@id': 'https://the-royal-club.vercel.app/about/#webpage',
+        'url': 'https://the-royal-club.vercel.app/about',
+        'name': 'About The Royal Club — Unity in Diversity & Social Impact',
+        'description': 'Discover The Royal Club — a pan-India community connecting 13 visionaries hosting daily Facebook Live sessions and monthly social impact initiatives.',
+        'breadcrumb': {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': 'https://the-royal-club.vercel.app/'
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'About',
+              'item': 'https://the-royal-club.vercel.app/about'
+            }
+          ]
+        }
+      }
+    ]
+  };
+
   return (
-    <main className="about-page">
-      {/* Animated Silk background */}
-      <div className="about-bg">
-        <Silk
-          speed={5}
-          scale={1}
-          color="#094c36"
-          noiseIntensity={1.5}
-          rotation={0}
-        />
-      </div>
-
-      {/* Content */}
-      <div className="about-content">
-        {/* Language toggle */}
-        <div className="about-lang-toggle">
-          <button
-            className={`about-lang-btn ${lang === 'en' ? 'active' : ''}`}
-            onClick={() => setLang('en')}
-          >
-            English
-          </button>
-          <button
-            className={`about-lang-btn ${lang === 'hi' ? 'active' : ''}`}
-            onClick={() => setLang('hi')}
-          >
-            हिन्दी
-          </button>
-        </div>
-
-        {lang === 'en' ? <EnglishContent /> : <HindiContent />}
-
-        {/* Accordion Gallery — Our Impact */}
-        <div className="about-gallery-section about-fade-in">
-          <h2 className="about-gallery-title">
-            {lang === 'en' ? 'Our Impact' : 'हमारा प्रभाव'}
-          </h2>
-          <p className="about-gallery-subtitle">
-            {lang === 'en'
-              ? 'Donations, live sessions, and the lives we\'ve touched.'
-              : 'दान, लाइव सत्र, और जिन जीवन को हमने छुआ है।'}
-          </p>
-          <AccordionGallery
-            items={galleryItems}
-            defaultIndex={2}
-            accentColor="#C9A227"
-            overlayColor="#0F2E26"
-            textColor="#F5F0E6"
-            height={460}
-            gap={8}
-            radius={14}
-            expandRatio={0.52}
-            duration={0.6}
-            ease="power3.out"
-            parallax={0.5}
-            tilt={8}
-            showLabels
-            grayscale
+    <>
+      <SEO
+        title="About Us & Social Impact"
+        description="Discover The Royal Club — a pan-India community connecting 13 visionaries hosting daily Facebook Live sessions and monthly charitable impact initiatives."
+        canonical="/about"
+        keywords="About The Royal Club, Social Impact, Charitable Giving India, Pan-India Community, Facebook Live Sessions"
+        schema={aboutSchema}
+      />
+      <main className="about-page">
+        {/* Animated Silk background */}
+        <div className="about-bg">
+          <Silk
+            speed={5}
+            scale={1}
+            color="#094c36"
+            noiseIntensity={1.5}
+            rotation={0}
           />
         </div>
-      </div>
-    </main>
+
+        {/* Content */}
+        <div className="about-content">
+          {/* Language toggle */}
+          <div className="about-lang-toggle">
+            <button
+              className={`about-lang-btn ${lang === 'en' ? 'active' : ''}`}
+              onClick={() => setLang('en')}
+              aria-label="Switch language to English"
+            >
+              English
+            </button>
+            <button
+              className={`about-lang-btn ${lang === 'hi' ? 'active' : ''}`}
+              onClick={() => setLang('hi')}
+              aria-label="हिन्दी भाषा में पढ़ें"
+            >
+              हिन्दी
+            </button>
+          </div>
+
+          {lang === 'en' ? <EnglishContent /> : <HindiContent />}
+
+          {/* Accordion Gallery — Our Impact */}
+          <section className="about-gallery-section about-fade-in" aria-labelledby="impact-heading">
+            <h2 id="impact-heading" className="about-gallery-title">
+              {lang === 'en' ? 'Our Impact' : 'हमारा प्रभाव'}
+            </h2>
+            <p className="about-gallery-subtitle">
+              {lang === 'en'
+                ? 'Donations, live sessions, and the lives we\'ve touched.'
+                : 'दान, लाइव सत्र, और जिन जीवन को हमने छुआ है।'}
+            </p>
+            <AccordionGallery
+              items={galleryItems}
+              defaultIndex={2}
+              accentColor="#C9A227"
+              overlayColor="#0F2E26"
+              textColor="#F5F0E6"
+              height={460}
+              gap={8}
+              radius={14}
+              expandRatio={0.52}
+              duration={0.6}
+              ease="power3.out"
+              parallax={0.5}
+              tilt={8}
+              showLabels
+              grayscale
+            />
+          </section>
+        </div>
+      </main>
+      <Footer />
+    </>
   );
 }
 
 function EnglishContent() {
   return (
-    <div key="en">
+    <article key="en">
       <h1 className="about-title about-fade-in">THE ROYAL CLUB</h1>
       <hr className="about-divider about-fade-in" />
 
@@ -105,13 +149,13 @@ function EnglishContent() {
       <p className="about-closer about-fade-in">
         The Royal Club — Where People Connect, Grow &amp; Make a Difference.
       </p>
-    </div>
+    </article>
   );
 }
 
 function HindiContent() {
   return (
-    <div key="hi">
+    <article key="hi">
       <h1 className="about-title about-fade-in">द रॉयल क्लब</h1>
       <hr className="about-divider about-fade-in" />
 
@@ -133,6 +177,7 @@ function HindiContent() {
       <p className="about-closer about-fade-in">
         द रॉयल क्लब — जहां लोग जुड़ते हैं, आगे बढ़ते हैं और बदलाव लाते हैं।
       </p>
-    </div>
+    </article>
   );
 }
+

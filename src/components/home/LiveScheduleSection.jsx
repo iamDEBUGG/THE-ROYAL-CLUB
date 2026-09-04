@@ -27,7 +27,12 @@ export default function LiveScheduleSection() {
             </div>
 
             <div className="home-live-active-thumb">
-              <img src={currentLive.memberImage} alt={currentLive.memberName} />
+              <img
+                src={currentLive.memberImage}
+                alt={`${currentLive.memberName} - Live Broadcaster`}
+                loading="lazy"
+                decoding="async"
+              />
             </div>
 
             <div className="home-live-active-info">
@@ -76,7 +81,12 @@ export default function LiveScheduleSection() {
               {nextTwoSchedules.map(sch => (
                 <div key={sch.id} className="home-schedule-card">
                   <div className="home-schedule-thumb">
-                    <img src={sch.memberImage} alt={sch.memberName} />
+                    <img
+                      src={sch.memberImage}
+                      alt={`${sch.memberName} (${sch.memberState})`}
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </div>
                   <div className="home-schedule-info">
                     <h4 className="home-schedule-topic">{sch.topic}</h4>

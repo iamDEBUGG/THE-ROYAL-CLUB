@@ -5,6 +5,8 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { LiveProvider } from './context/LiveContext';
 import CardNav from './components/common/CardNav';
+import SEO from './components/common/SEO';
+import Footer from './components/common/Footer';
 import HeroScrollCanvas from './components/hero/HeroScrollCanvas';
 import CircularGallery from './components/gallery/CircularGallery';
 import MembersPage from './components/members/MembersPage';
@@ -35,85 +37,108 @@ const memberItems = [
 
 /* ── Home Page Component ── */
 const HomePage = () => (
-  <main>
-    <HeroScrollCanvas />
+  <>
+    <SEO
+      title="Unity in Diversity | Pan-India Visionaries"
+      description="THE ROYAL CLUB — A prestigious pan-India community of 13 visionary leaders hosting daily interactive Facebook Live sessions, fostering collective growth, and driving monthly social impact."
+      canonical="/"
+      keywords="The Royal Club, Royal Club India, Facebook Live, Daily Live Sessions, Social Impact, Rajendra Singh Papola, Pan India Community, Inspiration, Awareness"
+    />
+    <main>
+      {/* Primary Accessible SEO Heading */}
+      <h1 className="sr-only">
+        THE ROYAL CLUB — Pan-India Community &amp; Daily Facebook Live Sessions
+      </h1>
 
-    {/* Sections below the scroll animation */}
-    <section className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
-      {/* Background image */}
-      <img
-        src="/welcome-bg.jpg"
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ zIndex: 0 }}
-      />
-      {/* Dark overlay for text readability */}
-      <div
-        className="absolute inset-0"
-        style={{ background: 'rgba(15, 46, 38, 0.55)', zIndex: 1 }}
-      />
-      <div className="relative max-w-3xl text-center" style={{ zIndex: 2 }}>
-        <h2 className="font-display text-4xl md:text-5xl text-cream mb-6">
-          Welcome to The Royal Club
-        </h2>
-        <p className="font-body text-lg text-cream/70 leading-relaxed">
-          A premium community of 13 visionaries united by purpose, hosting daily Facebook Live sessions
-          that inspire, educate, and transform.
-        </p>
-      </div>
-    </section>
+      <HeroScrollCanvas />
 
-    <section className="min-h-screen flex flex-col px-6 py-16" style={{ background: 'var(--color-royal-green)' }}>
-      <div className="max-w-3xl text-center mx-auto mb-8">
-        <h2 className="font-display text-4xl md:text-5xl text-cream mb-6">
-          Our Members
-        </h2>
-        <p className="font-body text-lg text-cream/70 leading-relaxed">
-          12 distinguished members and a visionary CEO — each bringing their unique voice to the community.
-        </p>
-      </div>
-      {/* CircularGallery – members showcase */}
-      <div className="flex-1 relative" style={{ minHeight: '500px' }}>
-        <CircularGallery
-          items={memberItems}
-          bend={0}
-          textColor="#F5F0E6"
-          borderRadius={0.11}
-          scrollEase={0.05}
-          font="bold 24px 'Playfair Display'"
-          fontUrl="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
-          scrollSpeed={2}
+      {/* Sections below the scroll animation */}
+      <section className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden" aria-label="Welcome Section">
+        {/* Background image */}
+        <img
+          src="/welcome-bg.jpg"
+          alt="The Royal Club Luxury Welcome Banner"
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ zIndex: 0 }}
         />
-      </div>
-      <div className="max-w-3xl text-center mx-auto mt-10 pb-4">
-        <blockquote className="font-display text-2xl md:text-3xl text-cream/90 italic leading-relaxed" style={{ fontStyle: 'italic' }}>
-          "A team is not a group of people who work together. A team is a group of people who trust each other."
-        </blockquote>
-      </div>
-    </section>
+        {/* Dark overlay for text readability */}
+        <div
+          className="absolute inset-0"
+          style={{ background: 'rgba(15, 46, 38, 0.55)', zIndex: 1 }}
+        />
+        <div className="relative max-w-3xl text-center" style={{ zIndex: 2 }}>
+          <h2 className="font-display text-4xl md:text-5xl text-cream mb-6">
+            Welcome to The Royal Club
+          </h2>
+          <p className="font-body text-lg text-cream/70 leading-relaxed">
+            A premium community of 13 visionaries united by purpose, hosting daily Facebook Live sessions
+            that inspire, educate, and transform.
+          </p>
+        </div>
+      </section>
 
-    {/* Dynamic Live Schedule Section */}
-    <LiveScheduleSection />
-  </main>
+      <section className="min-h-screen flex flex-col px-6 py-16" style={{ background: 'var(--color-royal-green)' }} aria-label="Members Showcase">
+        <div className="max-w-3xl text-center mx-auto mb-8">
+          <h2 className="font-display text-4xl md:text-5xl text-cream mb-6">
+            Our Members
+          </h2>
+          <p className="font-body text-lg text-cream/70 leading-relaxed">
+            12 distinguished members and a visionary CEO — each bringing their unique voice to the community.
+          </p>
+        </div>
+        {/* CircularGallery – members showcase */}
+        <div className="flex-1 relative" style={{ minHeight: '500px' }}>
+          <CircularGallery
+            items={memberItems}
+            bend={0}
+            textColor="#F5F0E6"
+            borderRadius={0.11}
+            scrollEase={0.05}
+            font="bold 24px 'Playfair Display'"
+            fontUrl="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
+            scrollSpeed={2}
+          />
+        </div>
+        <div className="max-w-3xl text-center mx-auto mt-10 pb-4">
+          <blockquote className="font-display text-2xl md:text-3xl text-cream/90 italic leading-relaxed" style={{ fontStyle: 'italic' }}>
+            "A team is not a group of people who work together. A team is a group of people who trust each other."
+          </blockquote>
+        </div>
+      </section>
+
+      {/* Dynamic Live Schedule Section */}
+      <LiveScheduleSection />
+    </main>
+    <Footer />
+  </>
 );
 
 const LoginPage = () => (
-  <main className="min-h-screen flex items-center justify-center px-6" style={{ background: 'var(--color-dark-green)' }}>
-    <div className="glass rounded-card p-8 max-w-md w-full text-center">
-      <h1 className="font-display text-3xl text-cream mb-4">Member Login</h1>
-      <p className="font-body text-cream/60">Login page — coming soon.</p>
-    </div>
-  </main>
+  <>
+    <SEO title="Member Login" canonical="/login" />
+    <main className="min-h-screen flex items-center justify-center px-6" style={{ background: 'var(--color-dark-green)' }}>
+      <div className="glass rounded-card p-8 max-w-md w-full text-center">
+        <h1 className="font-display text-3xl text-cream mb-4">Member Login</h1>
+        <p className="font-body text-cream/60">Login page — coming soon.</p>
+      </div>
+    </main>
+    <Footer />
+  </>
 );
 
 const RegisterPage = () => (
-  <main className="min-h-screen flex items-center justify-center px-6" style={{ background: 'var(--color-dark-green)' }}>
-    <div className="glass rounded-card p-8 max-w-md w-full text-center">
-      <h1 className="font-display text-3xl text-cream mb-4">Join The Club</h1>
-      <p className="font-body text-cream/60">Registration is invite-only.</p>
-    </div>
-  </main>
+  <>
+    <SEO title="Join The Club" canonical="/register" />
+    <main className="min-h-screen flex items-center justify-center px-6" style={{ background: 'var(--color-dark-green)' }}>
+      <div className="glass rounded-card p-8 max-w-md w-full text-center">
+        <h1 className="font-display text-3xl text-cream mb-4">Join The Club</h1>
+        <p className="font-body text-cream/60">Registration is invite-only.</p>
+      </div>
+    </main>
+    <Footer />
+  </>
 );
 
 /* ── Navigation Items for CardNav ── */

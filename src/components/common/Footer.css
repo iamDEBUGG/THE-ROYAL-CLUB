@@ -1,0 +1,161 @@
+.royal-footer {
+  background-color: #0B241E;
+  border-top: 1px solid rgba(201, 162, 39, 0.25);
+  color: #F5F0E6;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.royal-footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 3rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.2fr;
+  gap: 3rem;
+}
+
+@media (max-width: 900px) {
+  .royal-footer-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 580px) {
+  .royal-footer-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 3rem 1.25rem 2rem;
+  }
+}
+
+.royal-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.royal-footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.royal-footer-crest {
+  font-size: 1.4rem;
+}
+
+.royal-footer-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #F5F0E6;
+}
+
+.royal-footer-motto {
+  color: #C9A227;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.royal-footer-desc {
+  color: rgba(245, 240, 230, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.royal-footer-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #C9A227;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.04em;
+}
+
+.royal-footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.royal-footer-links li a {
+  color: rgba(245, 240, 230, 0.8);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.royal-footer-links li a:hover {
+  color: #C9A227;
+  transform: translateX(4px);
+}
+
+.royal-footer-meta {
+  color: rgba(245, 240, 230, 0.7);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.royal-footer-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.royal-footer-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.65rem;
+  background: rgba(201, 162, 39, 0.12);
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  border-radius: 999px;
+  color: #F5F0E6;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.royal-footer-bottom {
+  border-top: 1px solid rgba(245, 240, 230, 0.1);
+  background: rgba(10, 31, 26, 0.6);
+  padding: 1.25rem 1.5rem;
+}
+
+.royal-footer-bottom-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.royal-footer-copy {
+  color: rgba(245, 240, 230, 0.65);
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.royal-footer-copy strong {
+  color: #C9A227;
+}
+
+.royal-footer-bottom-links {
+  color: rgba(245, 240, 230, 0.45);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+}

@@ -1,0 +1,14 @@
+# User-agent directives for The Royal Club
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /members
+Allow: /live
+Allow: /schedule
+Allow: /archives
+Allow: /ceo
+Disallow: /admin
+
+# Host and Sitemap
+Host: https://the-royal-club.vercel.app
+Sitemap: https://the-royal-club.vercel.app/sitemap.xml
